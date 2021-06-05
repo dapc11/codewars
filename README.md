@@ -1,3 +1,3 @@
 # codewars
 
-Repository for gathering all my codewars exercises.
+Repository for gathering all my codewars katas.
