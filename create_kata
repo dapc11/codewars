@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+import os
+import pathlib
+import sys
+
+LANGUAGES = {'python': 'py', 'golang': 'go'}
+
+
+def get_language(string):
+    try:
+        for k, v in LANGUAGES.items():
+            if k == string:
+                return k, v
+    except KeyError:
+        pass
+    print(f"Could not find language: '{string}'")
+    sys.exit(1)
+
+
+def get_snake_case(unformatted_list):
+    return '_'.join(unformatted_list).lower()
+
+
+ARGS = sys.argv
+if len(ARGS) != 3:
+    print('Usage: ./create_kata <language> <kata>')
+    sys.exit(1)
+
+ARGS.pop(0)
+LANG, SUFFIX = get_language(ARGS.pop(0))
+NAME = get_snake_case(ARGS)
+
+FILE_PATH = pathlib.Path(f'{LANG}/{NAME}.{SUFFIX}')
+if not FILE_PATH.is_file():
+    FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    FILE_PATH.touch()
+
+    MODE = os.stat(FILE_PATH).st_mode
+    MODE |= (MODE & 0o444) >> 2  # copy R bits to X
+    os.chmod(FILE_PATH, MODE)
